@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPA Fiscal BI v6.0</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+header{background:linear-gradient(90deg,#1e1b4b,#1e3a5f);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-icon{font-size:38px}
+.logo-title{font-size:20px;font-weight:900}
+.logo-sub{font-size:10px;color:#93c5fd;font-weight:700;letter-spacing:2px;margin-top:2px}
+.badge{font-size:10px;background:#3b82f6;padding:2px 10px;border-radius:20px;margin-left:8px}
+.nav{display:flex;background:rgba(0,0,0,0.3);padding:4px;border-radius:12px;gap:4px}
+.nav-btn{padding:8px 20px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;border:none;background:transparent;color:#94a3b8;transition:all 0.2s}
+.nav-btn.active{background:#3b82f6;color:#fff}
+main{max-width:1100px;margin:0 auto;padding:28px 20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px;text-align:center}
+.stat-emoji{font-size:30px;margin-bottom:6px}
+.stat-val{font-size:34px;font-weight:900;margin-bottom:4px}
+.stat-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px}
+.glass{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;margin-bottom:24px}
+.section-title{font-weight:900;font-size:16px;margin-bottom:20px}
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.risk-card{border-radius:18px;padding:16px;cursor:pointer;transition:transform 0.2s;border:1px solid}
+.risk-card:hover{transform:scale(1.04)}
+.risk-card.ok{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.3)}
+.risk-card.nc{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.3)}
+.risk-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.risk-emoji{font-size:24px}
+.nc-badge{background:#ef4444;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:800}
+.risk-name{font-size:11px;font-weight:900;margin-bottom:8px}
+.progress-bar{background:rgba(0,0,0,0.3);height:6px;border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:10px;transition:width 0.8s}
+.risk-perc{font-size:11px;font-weight:700;margin-top:4px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
+input[type=text],input[type=date]{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;color:#e2e8f0;font-size:14px;outline:none;width:100%}
+input::placeholder{color:#64748b}
+.mod-tabs{display:flex;overflow-x:auto;gap:8px;padding-bottom:10px;margin-bottom:20px;scrollbar-width:thin}
+.mod-tab{padding:8px 16px;border-radius:20px;font-weight:800;font-size:11px;cursor:pointer;border:none;white-space:nowrap;background:rgba(255,255,255,0.05);color:#94a3b8;transition:all 0.2s}
+.mod-tab.active{color:#fff}
+.checklist-header{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.mod-big-emoji{font-size:46px}
+.mod-title{font-size:22px;font-weight:900}
+.mod-norma{font-size:12px;color:#64748b;font-weight:700;margin-top:2px}
+.item-row{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.item-text{flex:1;font-size:14px;font-weight:600}
+.item-btns{display:flex;gap:8px}
+.s-btn{width:44px;height:44px;border-radius:12px;border:none;cursor:pointer;font-size:18px;background:rgba(255,255,255,0.06);transition:all 0.2s}
+.s-btn.sim{background:#10b981;box-shadow:0 0 15px rgba(16,185,129,0.4);transform:scale(1.1)}
+.s-btn.nao{background:#ef4444;box-shadow:0 0 15px rgba(239,68,68,0.4);transform:scale(1.1)}
+.s-btn.na{background:#64748b;transform:scale(1.1)}
+.action-row{display:flex;gap:12px;margin-bottom:20px}
+.action-btn{flex:1;padding:14px;border:none;border-radius:14px;color:#fff;font-weight:800;font-size:14px;cursor:pointer;transition:background 0.2s}
+.report-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:24px}
+.report-title{font-weight:900;font-size:14px;margin-bottom:12px}
+pre{white-space:pre-wrap;font-size:12px;color:#cbd5e1;line-height:1.8;font-family:'Segoe UI',sans-serif}
+.hidden{display:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#1e293b}
+::-webkit-scrollbar-thumb{background:#475569;border-radius:10px}
+@media(max-width:600px){
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .info-grid{grid-template-columns:1fr}
+  header{flex-direction:column;gap:12px}
+}
+@media print{
+  header,.nav,.info-grid,.mod-tabs,.action-row{display:none!important}
+  body{background:#fff;color:#000}
+  .glass{border:1px solid #ccc}
+  pre{color:#000}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div>
+      <div class="logo-title">UPA FISCAL BI <span class="badge">v6.0</span></div>
+      <div class="logo-sub">PARECER 01/2024 COFEN — 11 MÓDULOS</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showView('dash')">📊 DASHBOARD</button>
+    <button class="nav-btn" onclick="showView('check')">✅ CHECKLIST</button>
+  </div>
+</header>
+
+<main>
+  <!-- DASHBOARD -->
+  <div id="view-dash">
+    <div class="grid4">
+      <div class="stat-card" style="border-left:4px solid #3b82f6">
+        <div class="stat-emoji">🎯</div>
+        <div class="stat-val" id="s-perc" style="color:#3b82f6">0%</div>
+        <div class="stat-label">Conformidade</div>
+      </div>
+      <div class="stat-card" style="border-left:4px solid #10b981">
+        <div class="stat-emoji">✅</div>
+        <div class="stat-val" id="s-sim" style="color:#10b981">0</div>
+        <div class="stat-label">Conformes</div>
+      </div>
+      <div class="stat-card" style="border-left:4px solid #ef4444">
+        <div class="stat-emoji">❌</div>
+        <div class="stat-val" id="s-nao" style="color:#ef4444">0</div>
+        <div class="stat-label">Irregularidades</div>
+      </div>
+      <div class="stat-card" style="border-left:4px solid #8b5cf6">
+        <div class="stat-emoji">📋</div>
+        <div class="stat-val" id="s-total" style="color:#8b5cf6">0</div>
+        <div class="stat-label">Avaliados</div>
+      </div>
+    </div>
+    <div class="glass">
+      <div class="section-title">🗺️ MAPA DE RISCO — Clique para abrir o módulo</div>
+      <div class="risk-grid" id="risk-grid"></div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div id="view-check" class="hidden">
+    <div class="info-grid">
+      <input type="text" id="inp-unidade" placeholder="🏥 Unidade UPA">
+      <input type="text" id="inp-fiscal" placeholder="👤 Fiscalizador">
+      <input type="date" id="inp-data">
+    </div>
+    <div class="mod-tabs" id="mod-tabs"></div>
+    <div class="glass" id="checklist-panel"></div>
+    <div class="action-row">
+      <button class="action-btn" style="background:#3b82f6" onclick="gerarRelatorio()">📄 GERAR RELATÓRIO</button>
+      <button class="action-btn" style="background:#7c3aed" onclick="showView('dash')">📊 DASHBOARD</button>
+      <button class="action-btn" style="background:#0f766e" onclick="window.print()">🖨️ IMPRIMIR</button>
+    </div>
+    <div id="report-area" class="hidden report-box">
+      <div class="report-title">📋 RELATÓRIO GERADO</div>
+      <pre id="report-text"></pre>
+    </div>
+  </div>
+</main>
+
+<script>
+const MODULES = [
+  {key:"dimensionamento",nome:"Dimensionamento",emoji:"👥",color:"#6366f1",norma:"Parecer 01/2024 COFEN",itens:["Escala atende proporção Enf/Pac?","Técnico/Paciente adequado?","IST 15% respeitado?","Enf. Classificação exclusivo?","Escala real vs normativa ok?","Sem desvio de função?","Leitos extras calculados?"]},
+  {key:"usina",nome:"Usina O₂",emoji:"🫁",color:"#0ea5e9",norma:"RDC 50/2002",itens:["Contrato/RT vigente?","Laudo Pureza ≥90%?","Pressão 3.5-5.5 kgf?","Alarme funcional?","Cilindros reserva ok?","Equipe treinada?","Preventivas em dia?","Relatório de falhas?","Impacto documentado?"]},
+  {key:"insumos",nome:"Insumos",emoji:"📦",color:"#f59e0b",norma:"Portaria 10/2017",itens:["Fluxômetros 1:1 + 20%?","Umidificadores ok?","Ambus + reserva?","Circuitos 7 dias estoque?","Lâminas Laringo (A/P)?","Carrinho Emergência ok?","Kits Intubação/Crico?"]},
+  {key:"indicadores",nome:"Indicadores",emoji:"📊",color:"#8b5cf6",norma:"Contrato OS IESP",itens:["Mortalidade documentada?","Tempo espera Manchester?","Taxa de Evasão?","Eventos Adversos?","Taxa Ocupação?","Satisfação Usuário?"]},
+  {key:"protocolos",nome:"Protocolos",emoji:"📋",color:"#10b981",norma:"Diretrizes Nacionais",itens:["Protocolo Sepse?","Protocolo IAM?","Protocolo AVC?","Protocolo Trauma?","Segurança Paciente?","Atas do NSP?"]},
+  {key:"seguranca",nome:"Segurança",emoji:"🛡️",color:"#ec4899",norma:"RDC 36/2013",itens:["Identificação 100%?","Prevenção Quedas?","Prevenção LPP?","Álcool Gel ok?","Tecnovigilância?","Cultura Justa?"]},
+  {key:"manutencao",nome:"Manutenção",emoji:"🔧",color:"#f97316",norma:"RDC 63/2011",itens:["Monitores calibrados?","Desfibrilador testado?","Bombas preventiva?","Respiradores diário?","SLA Corretiva ok?","Chamados técnicos?"]},
+  {key:"educacao",nome:"Educação",emoji:"🎓",color:"#14b8a6",norma:"COFEN 564/2017",itens:["Cronograma Capacitação?","Treino RCP/BLS?","Treino Protocolos?","Avaliação Competência?","Integração Novos?","Biblioteca Técnica?"]},
+  {key:"pops",nome:"POPs",emoji:"📝",color:"#a855f7",norma:"Boas Práticas",itens:["POP Acesso Central?","POP Intubação?","POP Punção Lombar?","POP Drenagem Tórax?","POP Cardioversão?","Revisão 2 anos?"]},
+  {key:"fluxos",nome:"Fluxos",emoji:"🔄",color:"#06b6d4",norma:"Manchester/NIR",itens:["Classificação Risco?","Fluxo Transferência?","Fluxo Notificação?","Acionamento Especialista?","Fluxo de Alta?","Fluxogramas Visuais?"]},
+  {key:"governanca",nome:"Governança",emoji:"⚖️",color:"#84cc16",norma:"RDC 36/2013",itens:["NSP Ativo?","CCIH Ativa?","Comissão Óbitos?","Revisão Prontuários?","Comissão Ética?","Matriz de Risco?"]}
+];
+
+// Estado
+const state = {};
+MODULES.forEach(m => { state[m.key] = m.itens.map(() => null); });
+let activeTab = "dimensionamento";
+
+// Init data input
+document.getElementById("inp-data").value = new Date().toISOString().split("T")[0];
+
+function showView(v) {
+  document.getElementById("view-dash").classList.toggle("hidden", v !== "dash");
+  document.getElementById("view-check").classList.toggle("hidden", v !== "check");
+  document.querySelectorAll(".nav-btn").forEach((b,i) => b.classList.toggle("active", (i===0&&v==="dash")||(i===1&&v==="check")));
+  if(v==="dash") renderDash();
+  if(v==="check") renderCheck();
+}
+
+function getStats() {
+  let s=0,n=0,t=0;
+  MODULES.forEach(m => state[m.key].forEach(v => { if(v==="sim"){s++;t++;} else if(v==="nao"){n++;t++;} }));
+  return {perc: t>0?Math.round(s/t*100):0, sim:s, nao:n, total:t};
+}
+
+function percColor(p){ return p>=80?"#10b981":p>=60?"#f59e0b":"#ef4444"; }
+
+function renderDash() {
+  const st = getStats();
+  document.getElementById("s-perc").textContent = st.perc+"%";
+  document.getElementById("s-perc").style.color = percColor(st.perc);
+  document.getElementById("s-sim").textContent = st.sim;
+  document.getElementById("s-nao").textContent = st.nao;
+  document.getElementById("s-total").textContent = st.total;
+
+  const grid = document.getElementById("risk-grid");
+  grid.innerHTML = "";
+  MODULES.forEach(m => {
+    const vals = state[m.key];
+    const s = vals.filter(v=>v==="sim").length;
+    const n = vals.filter(v=>v==="nao").length;
+    const t = s+n;
+    const p = t>0?Math.round(s/t*100):0;
+    const card = document.createElement("div");
+    card.className = "risk-card " + (n>0?"nc":"ok");
+    card.onclick = () => { activeTab=m.key; showView("check"); };
+    card.innerHTML = '<div class="risk-top"><span class="risk-emoji">'+m.emoji+'</span>'+(n>0?'<span class="nc-badge">'+n+' NC</span>':'')+'</div><div class="risk-name">'+m.nome+'</div><div class="progress-bar"><div class="progress-fill" style="width:'+p+'%;background:'+(p>=80?"#10b981":"#ef4444")+'"></div></div><div class="risk-perc" style="color:'+percColor(p)+'">'+p+'%</div>';
+    grid.appendChild(card);
+  });
+}
+
+function renderCheck() {
+  // Tabs
+  const tabs = document.getElementById("mod-tabs");
+  tabs.innerHTML = "";
+  MODULES.forEach(m => {
+    const btn = document.createElement("button");
+    btn.className = "mod-tab" + (m.key===activeTab?" active":"");
+    if(m.key===activeTab) btn.style.background = m.color;
+    btn.textContent = m.emoji+" "+m.nome;
+    btn.onclick = () => { activeTab=m.key; renderCheck(); };
+    tabs.appendChild(btn);
+  });
+
+  // Panel
+  const mod = MODULES.find(m=>m.key===activeTab);
+  const panel = document.getElementById("checklist-panel");
+  panel.style.borderLeft = "6px solid "+mod.color;
+  let html = '<div class="checklist-header"><div class="mod-big-emoji">'+mod.emoji+'</div><div><div class="mod-title">'+mod.nome+'</div><div class="mod-norma">📌 '+mod.norma+'</div></div></div>';
+  mod.itens.forEach((item, idx) => {
+    const cur = state[mod.key][idx];
+    html += '<div class="item-row"><div class="item-text">'+(idx+1)+'. '+item+'</div><div class="item-btns">';
+    ["sim","nao","na"].forEach(t => {
+      const icon = t==="sim"?"✅":t==="nao"?"❌":"➖";
+      html += '<button class="s-btn'+(cur===t?" "+t+'"'):'"')+' onclick="toggle(''+mod.key+'','+idx+',''+t+'')">'+icon+'</button>';
+    });
+    html += '</div></div>';
+  });
+  panel.innerHTML = html;
+}
+
+function toggle(key, idx, val) {
+  state[key][idx] = state[key][idx]===val ? null : val;
+  renderCheck();
+}
+
+function gerarRelatorio() {
+  const st = getStats();
+  const unidade = document.getElementById("inp-unidade").value || "Não informado";
+  const fiscal = document.getElementById("inp-fiscal").value || "Não informado";
+  const data = document.getElementById("inp-data").value;
+  const ncs = [];
+  MODULES.forEach(m => {
+    state[m.key].forEach((v,i) => { if(v==="nao") ncs.push("["+m.emoji+" "+m.nome+"] "+m.itens[i]); });
+  });
+  const txt = "RELATÓRIO DE FISCALIZAÇÃO UPA\n" +
+    "=".repeat(50)+"\n"+
+    "Unidade: "+unidade+"\n"+
+    "Fiscal: "+fiscal+"\n"+
+    "Data: "+data+"\n\n"+
+    "RESULTADO: "+st.perc+"% de conformidade\n"+
+    "Conformes: "+st.sim+" | Não conformes: "+st.nao+" | Total: "+st.total+"\n\n"+
+    (ncs.length>0?"NÃO CONFORMIDADES:\n"+ncs.map((nc,i)=>(i+1)+". "+nc).join("\n"):"✅ Nenhuma não conformidade registrada.")+
+    "\n\nBase Legal: Parecer 01/2024 COFEN | RDC 36/2013 | Portaria 10/2017";
+  document.getElementById("report-text").textContent = txt;
+  document.getElementById("report-area").classList.remove("hidden");
+  document.getElementById("report-area").scrollIntoView({behavior:"smooth"});
+}
+
+// Init
+renderDash();
+renderCheck();
+</script>
+</body>
+</html>
